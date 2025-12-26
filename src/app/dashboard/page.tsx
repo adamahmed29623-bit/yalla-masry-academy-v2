@@ -1,14 +1,14 @@
 "use client";
 
 import { useFirebase } from '@/firebase';
-import { useDoc, useMemoFirebase } from '@/firebase';
-import { doc } from 'firebase/firestore';
 import { Loader2, ArrowRight, Star, Gem, Trophy } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
+import { useDoc, useMemoFirebase } from '@/firebase';
+import { doc } from 'firebase/firestore';
 
 export default function DashboardPage() {
     const { user, firestore, isUserLoading } = useFirebase();
@@ -20,7 +20,7 @@ export default function DashboardPage() {
 
     const { data: userData, isLoading: isUserDataLoading } = useDoc(userRef);
 
-    if (isUserLoading || isUserDataLoading) {
+    if (isUserLoading || (user && !userData) || isUserDataLoading) {
         return (
             <div className="container mx-auto py-10">
                 <div className="flex justify-center items-center h-64">
@@ -42,16 +42,6 @@ export default function DashboardPage() {
         );
     }
     
-    if (!userData) {
-         return (
-            <div className="container mx-auto py-10 text-center">
-                <h1 className="text-2xl font-bold">Loading User Profile...</h1>
-                <p className="text-muted-foreground mt-2">Please wait a moment.</p>
-                 <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mt-4" />
-            </div>
-        );
-    }
-
     return (
         <div className="container mx-auto py-10 space-y-8">
             {/* Welcome Header */}

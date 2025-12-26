@@ -1,4 +1,4 @@
-"use server";
+{"use server";
 
 import { generateSecurityRules } from "@/ai/flows/generate-security-rules";
 import { suggestRuleImprovements } from "@/ai/flows/suggest-rule-improvements";
