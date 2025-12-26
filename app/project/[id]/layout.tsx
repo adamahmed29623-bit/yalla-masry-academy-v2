@@ -1,4 +1,3 @@
-
 "use client";
 
 import { ProjectNav } from "@/components/project-nav"
@@ -18,6 +17,7 @@ export default function ProjectLayout({
 
   const projectRef = useMemoFirebase(() => {
     if (!firestore || !user) return null
+    // Note: The document ID is params.id which is the projectId
     return doc(firestore, `users/${user.uid}/firebaseProjects`, params.id)
   }, [firestore, user, params.id])
 
@@ -61,5 +61,3 @@ export default function ProjectLayout({
     </div>
   )
 }
-
-    

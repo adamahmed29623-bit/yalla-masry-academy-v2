@@ -3,7 +3,6 @@
 import Link from 'next/link'
 import { FirebaseLogo } from '@/components/icons'
 import { UserNav } from '@/components/user-nav'
-import { Button } from '@/components/ui/button'
 
 export function Header() {
   return (

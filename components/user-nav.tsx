@@ -13,9 +13,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { CreditCard, LogOut, Settings, User, LogIn, Loader2 } from "lucide-react"
 import { useFirebase } from "@/firebase"
-import { getAuth, signOut } from "firebase/auth"
+import { signOut } from "firebase/auth"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 
 function getInitials(name?: string | null) {
   if (!name) return "U";
@@ -28,8 +27,6 @@ function getInitials(name?: string | null) {
 
 export function UserNav() {
   const { user, isUserLoading, auth } = useFirebase();
-  const router = useRouter();
-
 
   const handleLogout = () => {
     if (!auth) return;
