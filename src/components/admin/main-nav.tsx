@@ -23,6 +23,12 @@ export function MainNav({
       >
         Students
       </Link>
+       <Link
+        href="/admin/challenge-analytics"
+        className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+      >
+        Challenges
+      </Link>
       <Link
         href="/admin/tutor-analytics"
         className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
