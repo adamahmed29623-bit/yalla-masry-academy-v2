@@ -31,19 +31,9 @@ export default function ProjectLayout({
     )
   }
 
-  if (error) {
+  if (error || !project) {
     console.error("Error fetching project:", error);
-    // This will render the not-found.tsx file in the app directory
     notFound()
-  }
-
-  if (!project) {
-     return (
-      <div className="container py-8 text-center">
-        <h1 className="text-2xl font-bold">Project Not Found</h1>
-        <p className="text-muted-foreground">We couldn't find a project with that ID for your account.</p>
-      </div>
-    )
   }
 
   return (

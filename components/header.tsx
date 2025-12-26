@@ -1,8 +1,8 @@
 "use client"
 
 import Link from 'next/link'
-import { FirebaseLogo } from '@/components/icons'
-import { UserNav } from '@/components/user-nav'
+import { FirebaseLogo } from "@/components/icons"
+import { UserNav } from "@/components/user-nav"
 
 export function Header() {
   return (
