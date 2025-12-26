@@ -2,29 +2,9 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-
-const ARTIFACTS: { [key: string]: any } = {
-    'mask': { 
-        title: 'قناع توت عنخ آمون', 
-        desc: 'قناع من الذهب الخالص، مطعم بالأحجار الكريمة والزجاج الملون. يعتبر من أروع الكنوز التي عُثر عليها في مقبرة الفرعون الذهبي.', 
-        pos: [0, 10, -50] 
-    },
-    'rosetta': { 
-        title: 'حجر رشيد', 
-        desc: 'مرسوم ملكي صدر في ممفيس، مصر، عام 196 قبل الميلاد. كان مفتاح فك رموز الكتابة الهيروغليفية المصرية.', 
-        pos: [-50, 10, 0] 
-    },
-     'sarcophagus': { 
-        title: 'تابوت حجري', 
-        desc: 'تابوت ضخم من الجرانيت، كان يستخدم لحفظ المومياء. النقوش عليه تروي قصة المتوفى وتدعو له بالخلود في العالم الآخر.', 
-        pos: [50, 5, 20] 
-    },
-     'cat_statue': { 
-        title: 'تمثال القطة باستت', 
-        desc: 'كانت القطط مقدسة في مصر القديمة وترتبط بالإلهة باستت، إلهة المنزل والخصوبة. كانت هذه التماثيل تقدم كقرابين في المعابد.', 
-        pos: [-20, 5, 40] 
-    }
-};
+import { Loader2 } from 'lucide-react';
+import { ARTIFACT_DATA } from '@/lib/museum-data';
+import { handleGetStory } from '@/app/actions';
 
 const MuseumPage = () => {
     const mountRef = useRef<HTMLDivElement>(null);
@@ -34,23 +14,38 @@ const MuseumPage = () => {
     const speakBtnRef = useRef<HTMLButtonElement>(null);
     const blockerRef = useRef<HTMLDivElement>(null);
     const markersContainerRef = useRef<HTMLDivElement>(null);
+    const audioRef = useRef<HTMLAudioElement>(null);
 
     const [isStarted, setIsStarted] = useState(false);
+    const [isGeneratingStory, setIsGeneratingStory] = useState(false);
     
-    // Store mutable scene objects in refs to prevent re-creation on re-renders
-    const sceneRef = useRef<THREE.Scene | null>(null);
-    const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
-    const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
-    const artifactMarkersRef = useRef<{ [key: string]: any }>({});
+    const artifactMarkersRef = useRef<{ [key: string]: { el: HTMLDivElement; pos: THREE.Vector3 } }>({});
 
-    // --- Text-to-speech function ---
-    const speak = (text: string) => {
+    const tellStory = async (title: string, description: string) => {
+        if (isGeneratingStory) return;
+        setIsGeneratingStory(true);
+
+        if (audioRef.current) {
+            audioRef.current.pause();
+            audioRef.current.src = '';
+        }
         window.speechSynthesis.cancel();
-        const msg = new SpeechSynthesisUtterance(text);
-        msg.lang = 'ar';
-        msg.pitch = 1.1;
-        msg.rate = 0.9;
-        window.speechSynthesis.speak(msg);
+
+        try {
+            const result = await handleGetStory({ title, description });
+            if (result.success && result.audioDataUri && audioRef.current) {
+                audioRef.current.src = result.audioDataUri;
+                audioRef.current.play();
+            } else {
+                console.error("Failed to get story, using fallback TTS:", result.error);
+                window.speechSynthesis.speak(new SpeechSynthesisUtterance(description));
+            }
+        } catch (error) {
+            console.error("Error calling storyteller action, using fallback TTS:", error);
+            window.speechSynthesis.speak(new SpeechSynthesisUtterance(description));
+        } finally {
+            setIsGeneratingStory(false);
+        }
     };
 
     const handleStart = () => {
@@ -63,6 +58,10 @@ const MuseumPage = () => {
     const handleClosePanel = () => {
         if (infoPanelRef.current) {
             infoPanelRef.current.classList.remove('visible');
+        }
+        if (audioRef.current) {
+            audioRef.current.pause();
+            audioRef.current.currentTime = 0;
         }
         window.speechSynthesis.cancel();
     };
@@ -80,20 +79,15 @@ const MuseumPage = () => {
         let onPointerDownLon = 0;
         let onPointerDownLat = 0;
 
-        // --- Basic Three.js setup ---
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.target = new THREE.Vector3(0, 0, 0);
+        camera.position.set(0, 0, 0);
+
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         
-        sceneRef.current = scene;
-        cameraRef.current = camera;
-        rendererRef.current = renderer;
-
         renderer.setSize(window.innerWidth, window.innerHeight);
         mountRef.current.appendChild(renderer.domElement);
 
-        // --- Scene Content ---
         scene.background = new THREE.Color(0x101010);
         scene.add(new THREE.AmbientLight(0xcccccc, 1.2));
         const pointLight = new THREE.PointLight(0xffffff, 1.5, 300);
@@ -123,29 +117,28 @@ const MuseumPage = () => {
         const sphere = new THREE.Mesh(geometry, wallMaterial);
         scene.add(sphere);
 
-        // --- Artifacts and Markers ---
-        Object.keys(ARTIFACTS).forEach(key => {
-            const artifact = ARTIFACTS[key];
+        Object.keys(ARTIFACT_DATA).forEach(artifactKey => {
+            const artifact = ARTIFACT_DATA[artifactKey as keyof typeof ARTIFACT_DATA];
             const box = new THREE.Mesh(new THREE.BoxGeometry(5, 5, 5), new THREE.MeshStandardMaterial({ color: 0xFFD700, emissive: 0xccab00, emissiveIntensity: 0.3 }));
-            box.position.set(artifact.pos[0], artifact.pos[1], artifact.pos[2]);
-            box.userData = { id: key };
+            box.position.copy(artifact.position);
+            box.userData = { id: artifactKey };
             scene.add(box);
             
-            // Create DOM marker
             const div = document.createElement('div');
             div.className = 'artifact-marker';
-            div.innerHTML = '<i class="fas fa-eye"></i>';
+            div.innerHTML = `<i class="${artifact.icon}"></i>`;
             div.onclick = () => {
                 if (artifactTitleRef.current) artifactTitleRef.current.innerText = artifact.title;
-                if (artifactDescRef.current) artifactDescRef.current.innerText = artifact.desc;
+                if (artifactDescRef.current) artifactDescRef.current.innerText = artifact.description;
                 if (infoPanelRef.current) infoPanelRef.current.classList.add('visible');
-                if (speakBtnRef.current) speakBtnRef.current.onclick = () => speak(artifact.desc);
+                if (speakBtnRef.current) speakBtnRef.current.onclick = () => tellStory(artifact.title, artifact.description);
             };
             if(markersContainerRef.current) markersContainerRef.current.appendChild(div);
-            artifactMarkersRef.current[key] = { el: div, pos: new THREE.Vector3(...artifact.pos) };
+            artifactMarkersRef.current[artifactKey] = { el: div, pos: artifact.position.clone() };
         });
 
-        // --- Animation Loop ---
+        const lookAtTarget = new THREE.Vector3();
+
         const animate = () => {
             requestAnimationFrame(animate);
 
@@ -157,12 +150,11 @@ const MuseumPage = () => {
             phi = THREE.MathUtils.degToRad(90 - lat);
             theta = THREE.MathUtils.degToRad(lon);
 
-            camera.target.x = 500 * Math.sin(phi) * Math.cos(theta);
-            camera.target.y = 500 * Math.cos(phi);
-            camera.target.z = 500 * Math.sin(phi) * Math.sin(theta);
-            camera.lookAt(camera.target);
+            lookAtTarget.x = 500 * Math.sin(phi) * Math.cos(theta);
+            lookAtTarget.y = 500 * Math.cos(phi);
+            lookAtTarget.z = 500 * Math.sin(phi) * Math.sin(theta);
+            camera.lookAt(lookAtTarget);
 
-            // Update marker positions
             Object.values(artifactMarkersRef.current).forEach(marker => {
                 const vector = marker.pos.clone().project(camera);
                 const x = (vector.x * 0.5 + 0.5) * window.innerWidth;
@@ -181,7 +173,6 @@ const MuseumPage = () => {
         };
         animate();
 
-        // --- Event Listeners ---
         function onWindowResize() {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
@@ -212,7 +203,6 @@ const MuseumPage = () => {
         window.addEventListener('resize', onWindowResize);
         document.addEventListener('pointerdown', onPointerDown);
 
-        // --- Cleanup ---
         return () => {
             window.removeEventListener('resize', onWindowResize);
             document.removeEventListener('pointerdown', onPointerDown);
@@ -223,15 +213,15 @@ const MuseumPage = () => {
             }
              if (markersContainerRef.current) {
                 markersContainerRef.current.innerHTML = '';
-            }
-            // Dispose Three.js objects to free up GPU memory
+             }
             scene.traverse(object => {
                 if (object instanceof THREE.Mesh) {
                     object.geometry.dispose();
-                    if(Array.isArray(object.material)) {
-                        object.material.forEach(material => material.dispose());
+                    const material = object.material as THREE.Material | THREE.Material[];
+                    if(Array.isArray(material)) {
+                        material.forEach(mat => mat.dispose());
                     } else {
-                        object.material.dispose();
+                        material.dispose();
                     }
                 }
             });
@@ -242,6 +232,7 @@ const MuseumPage = () => {
 
     return (
         <>
+            <audio ref={audioRef} hidden />
             <style jsx global>{`
                 body, html {
                     overflow: hidden;
@@ -283,8 +274,14 @@ const MuseumPage = () => {
                 <h2 id="artifact-title" ref={artifactTitleRef} className="text-2xl font-bold mb-2 border-b border-yellow-600 pb-2"></h2>
                 <p id="artifact-description" ref={artifactDescRef} className="text-gray-200 mb-4 leading-relaxed"></p>
                 <div className="flex flex-col space-y-2">
-                    <button id="speak-btn" ref={speakBtnRef} className="bg-blue-700 p-2 rounded font-bold hover:bg-blue-600 transition text-white">
-                        <i className="fas fa-volume-up ml-2"></i> استمع للوصف
+                    <button id="speak-btn" ref={speakBtnRef} className="bg-blue-700 p-2 rounded font-bold hover:bg-blue-600 transition text-white flex items-center justify-center" disabled={isGeneratingStory}>
+                         {isGeneratingStory ? (
+                            <Loader2 className="h-5 w-5 animate-spin" />
+                        ) : (
+                            <>
+                                <i className="fas fa-volume-up ml-2"></i> استمع للقصة
+                            </>
+                        )}
                     </button>
                     <button id="close-panel" onClick={handleClosePanel} className="bg-red-700 p-2 rounded font-bold text-white">إغلاق</button>
                 </div>
