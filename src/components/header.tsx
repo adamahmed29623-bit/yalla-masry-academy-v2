@@ -39,6 +39,12 @@ export function Header() {
             >
               Challenge
             </Link>
+             <Link
+              href="/smart-adventure"
+              className="transition-colors hover:text-foreground/80 text-foreground/60"
+            >
+              Smart Adventure
+            </Link>
             <Link
               href="/store"
               className="transition-colors hover:text-foreground/80 text-foreground/60"

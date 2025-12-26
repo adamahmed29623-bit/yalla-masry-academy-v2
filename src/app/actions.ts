@@ -2,6 +2,7 @@
 
 import { generateSecurityRules } from "@/ai/flows/generate-security-rules";
 import { suggestRuleImprovements } from "@/ai/flows/suggest-rule-improvements";
+import { handleAdventure } from "@/ai/flows/smart-adventure-flow";
 import { z } from "zod";
 
 const generateRulesSchema = z.object({
@@ -61,4 +62,29 @@ export async function handleSuggestImprovements(prevState: any, formData: FormDa
     console.error(error);
     return { message: "AI suggestion failed. Please try again.", errors: {} };
   }
+}
+
+const adventureSchema = z.object({
+  userInput: z.string(),
+  taskType: z.enum(['challenge', 'correction']),
+});
+
+export async function handleSmartAdventure(prevState: any, formData: FormData) {
+    const validatedFields = adventureSchema.safeParse({
+      userInput: formData.get('userInput'),
+      taskType: formData.get('taskType'),
+    });
+
+    if (!validatedFields.success) {
+        return { message: "Invalid input.", text: "" };
+    }
+
+    try {
+        const result = await handleAdventure(validatedFields.data);
+        return { message: "success", text: result.text };
+    } catch (error) {
+        console.error(error);
+        return { message: "AI generation failed.", text: "حصلت مشكلة في الاتصال بـ Gemini، حاول تاني يا بطل!" };
+    }
+}
 }
