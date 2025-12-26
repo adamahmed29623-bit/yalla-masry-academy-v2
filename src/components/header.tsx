@@ -33,6 +33,12 @@ export function Header() {
             >
               Museum
             </Link>
+            <Link
+              href="/store"
+              className="transition-colors hover:text-foreground/80 text-foreground/60"
+            >
+              Store
+            </Link>
           </nav>
         </div>
         <div className="flex flex-1 items-center justify-end space-x-4">

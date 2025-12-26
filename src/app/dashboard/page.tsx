@@ -1,5 +1,5 @@
 "use client";
-
+import { useState, useEffect } from 'react';
 import { useFirebase } from '@/firebase';
 import { Loader2, ArrowRight, Star, Gem, Trophy } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,7 +8,7 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { useDoc, useMemoFirebase } from '@/firebase';
-import { doc } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 
 export default function DashboardPage() {
     const { user, firestore, isUserLoading } = useFirebase();
@@ -19,6 +19,31 @@ export default function DashboardPage() {
     }, [firestore, user]);
 
     const { data: userData, isLoading: isUserDataLoading } = useDoc(userRef);
+
+    const [nilePoints, setNilePoints] = useState<number | null>(null);
+
+    useEffect(() => {
+        if (userData) {
+            // Initialize points from Firestore
+            const initialPoints = userData.nilePoints;
+            setNilePoints(initialPoints);
+            // Also set it in localStorage for the store to use
+            localStorage.setItem('nilePoints', initialPoints.toString());
+
+            // Listen for changes from other tabs (e.g., the store)
+            const handleStorageChange = () => {
+                const updatedPoints = localStorage.getItem('nilePoints');
+                if (updatedPoints) {
+                    setNilePoints(parseInt(updatedPoints, 10));
+                }
+            };
+            window.addEventListener('storage', handleStorageChange);
+            return () => {
+                window.removeEventListener('storage', handleStorageChange);
+            };
+        }
+    }, [userData]);
+
 
     if (isUserLoading || (user && !userData) || isUserDataLoading) {
         return (
@@ -58,7 +83,7 @@ export default function DashboardPage() {
                         <Gem className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{userData.nilePoints}</div>
+                        <div className="text-2xl font-bold">{nilePoints ?? '...'}</div>
                         <p className="text-xs text-muted-foreground">واصل التقدم لجمع المزيد!</p>
                     </CardContent>
                 </Card>
