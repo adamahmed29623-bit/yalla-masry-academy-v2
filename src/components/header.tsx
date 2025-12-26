@@ -22,6 +22,12 @@ export function Header() {
               Dashboard
             </Link>
             <Link
+              href="/egyptian-school"
+              className="transition-colors hover:text-foreground/80 text-foreground/60"
+            >
+              المدرسة
+            </Link>
+            <Link
               href="/teachers"
               className="transition-colors hover:text-foreground/80 text-foreground/60"
             >
