@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { FirebaseLogo } from '@/components/icons'
 import { UserNav } from '@/components/user-nav'
-import { Button } from './ui/button'
+import { Button } from '@/components/ui/button'
 
 export function Header() {
   return (
@@ -14,6 +14,20 @@ export function Header() {
               Yalla Masry Academy
             </span>
           </Link>
+          <nav className="flex items-center space-x-6 text-sm font-medium">
+             <Link
+              href="/dashboard"
+              className="transition-colors hover:text-foreground/80 text-foreground/60"
+            >
+              Dashboard
+            </Link>
+            <Link
+              href="/teachers"
+              className="transition-colors hover:text-foreground/80 text-foreground/60"
+            >
+              Teachers
+            </Link>
+          </nav>
         </div>
         <div className="flex flex-1 items-center justify-end space-x-4">
           <UserNav />

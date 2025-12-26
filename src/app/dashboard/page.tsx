@@ -1,166 +1,123 @@
 "use client";
 
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Globe, PlusCircle, Loader2 } from 'lucide-react';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { useFirebase } from '@/firebase';
-import { useCollection } from '@/firebase/firestore/use-collection';
-import { useMemo, useState, useEffect } from 'react';
-import { collection } from 'firebase/firestore';
-import { useFormState, useFormStatus } from 'react-dom';
-import { handleAddProject } from '@/app/actions';
-import { useToast } from '@/hooks/use-toast';
-
-function AddProjectForm({ userId }: { userId: string }) {
-    const { toast } = useToast();
-    const [open, setOpen] = useState(false);
-    const initialState = { message: "", errors: {} };
-    const [state, dispatch] = useFormState(handleAddProject, initialState);
-
-    useEffect(() => {
-        if (state.message === "success") {
-            setOpen(false);
-            toast({ title: "Success", description: "Project added successfully." });
-        } else if (state.message && state.message !== 'Validation failed') {
-            toast({ variant: "destructive", title: "Error", description: state.message });
-        }
-    }, [state, toast]);
-
-    function SubmitButton() {
-        const { pending } = useFormStatus();
-        return (
-            <Button type="submit" disabled={pending}>
-                {pending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Creating...</> : 'Create'}
-            </Button>
-        );
-    }
-    
-    return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                <Button>
-                    <PlusCircle className="mr-2 h-4 w-4" /> Add Project
-                </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-                <form action={dispatch}>
-                    <DialogHeader>
-                        <DialogTitle>Create project</DialogTitle>
-                        <DialogDescription>
-                            Add a new Firebase project to manage.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                        <input type="hidden" name="userId" value={userId} />
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="name" className="text-right">
-                                Name
-                            </Label>
-                            <Input id="name" name="name" placeholder="My New Project" className="col-span-3" />
-                        </div>
-                        {state.errors?.name && <p className="text-sm text-destructive col-start-2 col-span-3">{state.errors.name[0]}</p>}
-                        
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="projectId" className="text-right">
-                                Project ID
-                            </Label>
-                            <Input id="projectId" name="projectId" placeholder="my-new-project-123" className="col-span-3" />
-                        </div>
-                        {state.errors?.projectId && <p className="text-sm text-destructive col-start-2 col-span-3">{state.errors.projectId[0]}</p>}
-
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="apiKey" className="text-right">
-                                API Key
-                            </Label>
-                            <Input id="apiKey" name="apiKey" placeholder="AIza..." className="col-span-3" />
-                        </div>
-                        {state.errors?.apiKey && <p className="text-sm text-destructive col-start-2 col-span-3">{state.errors.apiKey[0]}</p>}
-                        
-                         <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="authDomain" className="text-right">
-                                Auth Domain
-                            </Label>
-                            <Input id="authDomain" name="authDomain" placeholder="project.firebaseapp.com" className="col-span-3" />
-                        </div>
-
-                    </div>
-                    <DialogFooter>
-                        <SubmitButton />
-                    </DialogFooter>
-                </form>
-            </DialogContent>
-        </Dialog>
-    );
-}
+import { useDoc, useMemoFirebase } from '@/firebase';
+import { doc } from 'firebase/firestore';
+import { Loader2, ArrowRight, Star, Gem, Trophy } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
+import { Badge } from '@/components/ui/badge';
+import Link from 'next/link';
 
 export default function DashboardPage() {
     const { user, firestore, isUserLoading } = useFirebase();
 
-    const projectsCollection = useMemo(() => {
+    const userRef = useMemoFirebase(() => {
         if (!firestore || !user) return null;
-        return collection(firestore, `users/${user.uid}/firebaseProjects`);
+        return doc(firestore, 'users', user.uid);
     }, [firestore, user]);
 
-    const { data: projects, isLoading: isLoadingProjects } = useCollection(projectsCollection);
+    const { data: userData, isLoading: isUserDataLoading } = useDoc(userRef);
 
-    if (isUserLoading || isLoadingProjects) {
+    if (isUserLoading || isUserDataLoading) {
         return (
             <div className="container mx-auto py-10">
-                <div className="flex justify-center items-center">
-                    <Loader2 className="h-8 w-8 animate-spin" />
+                <div className="flex justify-center items-center h-64">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
                 </div>
             </div>
-        )
+        );
     }
 
     if (!user) {
         return (
              <div className="container mx-auto py-10 text-center">
-                <h1 className="text-2xl font-bold">Welcome to Yalla Masry Academy</h1>
-                <p className="text-muted-foreground">Please sign in to manage your projects.</p>
+                <h1 className="text-3xl font-bold font-headline text-primary">أهلاً بك في أكاديمية يلا مصري</h1>
+                <p className="text-muted-foreground mt-2">من فضلك، قم بتسجيل الدخول لبدء رحلتك في تعلم العامية المصرية.</p>
+                 <Button asChild className="mt-6">
+                    <Link href="/login">تسجيل الدخول</Link>
+                </Button>
             </div>
-        )
+        );
     }
     
+    if (!userData) {
+         return (
+            <div className="container mx-auto py-10 text-center">
+                <h1 className="text-2xl font-bold">Loading User Profile...</h1>
+                <p className="text-muted-foreground mt-2">Please wait a moment.</p>
+                 <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mt-4" />
+            </div>
+        );
+    }
+
     return (
-        <div className="container mx-auto py-10">
-            <div className="flex justify-between items-center mb-8">
-                <h1 className="text-3xl font-bold font-headline">Projects</h1>
-                <AddProjectForm userId={user.uid} />
+        <div className="container mx-auto py-10 space-y-8">
+            {/* Welcome Header */}
+            <div className="p-6 rounded-lg bg-card border border-border">
+                <h1 className="text-3xl font-bold font-headline text-primary">أهلاً بعودتك، {userData.name}!</h1>
+                <p className="text-lg text-muted-foreground">لقبك الفرعوني هو: <span className="font-semibold text-accent-foreground">{userData.alias}</span></p>
             </div>
 
-            {projects && projects.length > 0 ? (
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    {projects.map((project) => (
-                        <Card key={project.id} className="flex flex-col transition-all hover:shadow-lg">
-                            <CardHeader>
-                                <CardTitle className="font-headline">{project.name}</CardTitle>
-                                <CardDescription>{project.projectId}</CardDescription>
-                            </CardHeader>
-                             <CardContent className="flex-grow">
-                              <div className="flex items-center text-sm text-muted-foreground">
-                                <Globe className="mr-2 h-4 w-4" />
-                                <span>{project.authDomain || 'N/A'}</span>
-                              </div>
-                            </CardContent>
-                            <CardFooter>
-                                <Button asChild className="w-full" variant="outline">
-                                    <Link href={`/project/${project.projectId}/overview`}>Open Project</Link>
-                                </Button>
-                            </CardFooter>
-                        </Card>
-                    ))}
-                </div>
-            ) : (
-                <div className="text-center py-12 border-2 border-dashed rounded-lg">
-                    <h2 className="text-xl font-semibold">No projects yet</h2>
-                    <p className="text-muted-foreground mt-2">Click "Add Project" to get started.</p>
-                </div>
-            )}
+            {/* Stats Grid */}
+            <div className="grid gap-6 md:grid-cols-3">
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">نقاط النيل</CardTitle>
+                        <Gem className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{userData.nilePoints}</div>
+                        <p className="text-xs text-muted-foreground">واصل التقدم لجمع المزيد!</p>
+                    </CardContent>
+                </Card>
+                 <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">المستوى الحالي</CardTitle>
+                        <Trophy className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold capitalize">{userData.level}</div>
+                        <p className="text-xs text-muted-foreground">هدفك: {userData.goal}</p>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">الشارات المكتسبة</CardTitle>
+                        <Star className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                         <div className="flex space-x-2 rtl:space-x-reverse">
+                            {userData.badges?.map((badge: string) => (
+                                <Badge key={badge} variant="secondary" className="capitalize">{badge.replace('_', ' ')}</Badge>
+                            ))}
+                        </div>
+                         <p className="text-xs text-muted-foreground mt-2">شارة جديدة على وشك الفتح!</p>
+                    </CardContent>
+                </Card>
+            </div>
+
+            {/* Continue Learning Section */}
+            <Card className="bg-primary text-primary-foreground">
+                <CardHeader>
+                    <CardTitle className="text-2xl font-headline">أكمل من حيث توقفت</CardTitle>
+                    <CardDescription className="text-primary-foreground/80">أنت على وشك إتقان التحيات والمجاملات. أكمل الدرس لفتح تحدٍ جديد!</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <div>
+                        <div className="flex justify-between mb-1">
+                            <span>الدرس 1: التحيات الأساسية</span>
+                            <span>75%</span>
+                        </div>
+                        <Progress value={75} className="h-2 [&>div]:bg-primary-foreground" />
+                    </div>
+                    <Button variant="secondary" size="lg" className="w-full md:w-auto">
+                        إلى الدرس التالي <ArrowRight className="mr-2 h-4 w-4" />
+                    </Button>
+                </CardContent>
+            </Card>
+
         </div>
     );
 }

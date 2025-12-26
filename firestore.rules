@@ -3,93 +3,38 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * Core Philosophy: This ruleset enforces a strict user-ownership model. All data is considered private and
-     * is accessible only by the user who created it. There is no concept of public or shared data.
-     *
-     * Data Structure: Data is organized hierarchically under the `/users/{userId}` path. Each user's document
-     * serves as the root for their private data, such as their `firebaseProjects` subcollection. This structure
-     * ensures that all data is neatly partitioned by user.
-     *
-     * Key Security Decisions:
-     * - User Isolation: A user can only ever access documents within their own data tree (i.e., under `/users/{their_own_uid}`).
-     * - No User Listing: It is forbidden to query the top-level `/users` collection to prevent exposing the list of all users.
-     * - No Profile Deletion: Users cannot delete their own profile document from the client to prevent accidental data loss.
-     * - Relational Integrity: On creation, documents must contain an internal ID field that matches the user ID in the path,
-     *   enforcing a consistent ownership link that cannot be changed on update.
-     *
-     * Denormalization for Authorization: The `FirebaseProject` documents contain a `userId` field. This allows for simple,
-     * fast, and secure validation rules on create and update operations, ensuring that a project document is always correctly
-     * associated with its owner without needing extra reads.
-     *
-     * Structural Segregation: The use of a user-specific subcollection (`/users/{userId}/firebaseProjects`) for private
-     * project data is a core part of the security model. This is inherently more secure and performant for list operations
-     * than mixing all projects in a single top-level collection.
-     */
-
-    // ----------------------------------------------------------------------
-    // Helper Functions
-    // ----------------------------------------------------------------------
-
-    /**
-     * Checks if the user is authenticated.
+     * Helper Functions
      */
     function isSignedIn() {
       return request.auth != null;
     }
 
-    /**
-     * Checks if the currently authenticated user's UID matches the provided userId.
-     * This is the primary function for verifying document ownership.
-     */
     function isOwner(userId) {
       return isSignedIn() && request.auth.uid == userId;
     }
 
     /**
-     * Checks if a document exists and if the requester is the owner.
-     * CRITICAL: Used for all state-changing operations (update, delete) to prevent
-     * acting on non-existent data and to enforce ownership.
-     */
-    function isExistingOwner(userId) {
-      return isOwner(userId) && resource != null;
-    }
-
-    // ----------------------------------------------------------------------
-    // Collection Rules
-    // ----------------------------------------------------------------------
-
-    /**
-     * @description Controls access to a user's own profile document.
-     * @path /users/{userId}
-     * @allow (create) An authenticated user creating their own profile document. auth.uid must match {userId}.
-     * @allow (get) An authenticated user reading their own profile.
-     * @deny (list) Any user attempting to list all documents in the `/users` collection.
-     * @deny (delete) A user trying to delete their own profile.
-     * @principle Restricts access to a user's own data tree and prevents user enumeration.
+     * User profiles can be read by anyone, but only written by the owner.
+     * This allows other users (e.g., students) to see basic info of others if needed,
+     * but secures their private data.
      */
     match /users/{userId} {
-      allow get: if isOwner(userId);
-      allow list: if false;
+      allow get: if isSignedIn();
+      allow list: if isSignedIn(); // Allow listing for features like leaderboards, etc.
       allow create: if isOwner(userId) && request.resource.data.id == userId;
-      allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
-      allow delete: if false;
+      allow update: if isOwner(userId);
+      allow delete: if false; // Prevent users from deleting their own accounts from the client
     }
-
+    
     /**
-     * @description Controls access to a user's private Firebase project configurations.
-     * @path /users/{userId}/firebaseProjects/{projectId}
-     * @allow (create) An authenticated user creating a new project document under their own profile.
-     * @allow (list) An authenticated user listing all of their own projects.
-     * @deny (get) A user trying to read another user's project document.
-     * @deny (create) A user trying to create a project under another user's profile.
-     * @principle Enforces document ownership for all operations within a user-specific subcollection.
+     * Teacher profiles are public and can be read by any authenticated user.
+     * This is necessary for students to browse and select teachers.
+     * Only the teacher themselves (who is also a user) can create or update their profile.
      */
-    match /users/{userId}/firebaseProjects/{projectId} {
-      allow get: if isOwner(userId);
-      allow list: if isOwner(userId);
-      allow create: if isOwner(userId) && request.resource.data.userId == userId;
-      allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
-      allow delete: if isExistingOwner(userId);
+    match /teachers/{teacherId} {
+      allow get, list: if isSignedIn();
+      allow create, update: if isOwner(teacherId);
+      allow delete: if false;
     }
   }
 }

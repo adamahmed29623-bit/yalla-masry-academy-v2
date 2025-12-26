@@ -6,58 +6,19 @@
       "type": "object",
       "description": "Represents a Firebase project managed within the application.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the Firebase project."
-        },
-        "name": {
-          "type": "string",
-          "description": "Name of the Firebase project."
-        },
-        "projectId": {
-          "type": "string",
-          "description": "The Firebase project ID (as defined in the Firebase console)."
-        },
-        "apiKey": {
-          "type": "string",
-          "description": "API key for the Firebase project."
-        },
-        "authDomain": {
-          "type": "string",
-          "description": "The authentication domain for the Firebase project."
-        },
-        "databaseURL": {
-          "type": "string",
-          "description": "The URL for the Firebase Realtime Database (if used)."
-        },
-        "storageBucket": {
-          "type": "string",
-          "description": "The storage bucket name for Firebase Storage."
-        },
-        "messagingSenderId": {
-          "type": "string",
-          "description": "The messaging sender ID for Firebase Cloud Messaging (FCM)."
-        },
-        "appId": {
-          "type": "string",
-          "description": "The application ID for the Firebase project."
-        },
-        "measurementId": {
-          "type": "string",
-          "description": "The measurement ID for Google Analytics (if enabled)."
-        },
-        "userId": {
-          "type": "string",
-          "description": "Reference to the User who created the project. (Relationship: User 1:N FirebaseProject)"
-        }
+        "id": { "type": "string", "description": "Unique identifier for the Firebase project." },
+        "name": { "type": "string", "description": "Name of the Firebase project." },
+        "projectId": { "type": "string", "description": "The Firebase project ID (as defined in the Firebase console)." },
+        "apiKey": { "type": "string", "description": "API key for the Firebase project." },
+        "authDomain": { "type": "string", "description": "The authentication domain for the Firebase project." },
+        "databaseURL": { "type": "string", "description": "The URL for the Firebase Realtime Database (if used)." },
+        "storageBucket": { "type": "string", "description": "The storage bucket name for Firebase Storage." },
+        "messagingSenderId": { "type": "string", "description": "The messaging sender ID for Firebase Cloud Messaging (FCM)." },
+        "appId": { "type": "string", "description": "The application ID for the Firebase project." },
+        "measurementId": { "type": "string", "description": "The measurement ID for Google Analytics (if enabled)." },
+        "userId": { "type": "string", "description": "Reference to the User who created the project. (Relationship: User 1:N FirebaseProject)" }
       },
-      "required": [
-        "id",
-        "name",
-        "projectId",
-        "apiKey",
-        "userId"
-      ]
+      "required": ["id", "name", "projectId", "apiKey", "userId"]
     },
     "User": {
       "$schema": "http://json-schema.org/draft-07/schema#",
@@ -65,36 +26,44 @@
       "type": "object",
       "description": "Represents a user of the Yalla Masry Academy application.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the user."
-        },
-        "email": {
-          "type": "string",
-          "description": "Email address of the user.",
-          "format": "email"
-        },
-        "displayName": {
-          "type": "string",
-          "description": "Display name of the user."
-        },
-        "creationDate": {
-          "type": "string",
-          "description": "The date and time the user was created.",
-          "format": "date-time"
-        }
+        "id": { "type": "string", "description": "Unique identifier for the user." },
+        "email": { "type": "string", "description": "Email address of the user.", "format": "email" },
+        "name": { "type": "string", "description": "Display name of the user." },
+        "alias": { "type": "string", "description": "A fun, Pharaonic alias for gamification." },
+        "role": { "type": "string", "description": "User role in the platform.", "enum": ["student", "teacher", "parent", "admin"] },
+        "registrationDate": { "type": "string", "format": "date-time" },
+        "nilePoints": { "type": "number" },
+        "goal": { "type": "string" },
+        "level": { "type": "string" },
+        "badges": { "type": "array", "items": { "type": "string" } },
+        "teacherId": { "type": "string", "description": "Reference to the teacher profile if the user is a teacher." }
       },
-      "required": [
-        "id",
-        "email"
-      ]
+      "required": ["id", "email", "name", "role", "registrationDate"]
+    },
+    "Teacher": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Teacher",
+      "type": "object",
+      "description": "Represents a teacher on the Yalla Masry Academy platform.",
+      "properties": {
+        "id": { "type": "string", "description": "Unique identifier for the teacher, matches user ID." },
+        "name": { "type": "string" },
+        "profilePictureUrl": { "type": "string", "format": "uri" },
+        "introVideoUrl": { "type": "string", "format": "uri" },
+        "headline": { "type": "string", "description": "A short, catchy headline for the teacher's profile." },
+        "bio": { "type": "string", "description": "A detailed biography of the teacher." },
+        "experience": { "type": "string", "description": "Description of teaching experience." },
+        "hourlyRate": { "type": "number", "description": "Price per hour in a standard currency." },
+        "availability": { "type": "string", "description": "A summary of the teacher's availability (e.g., 'Weekends', 'Evenings')." },
+        "rating": { "type": "number", "description": "Average rating from 1 to 5." },
+        "totalReviews": { "type": "number" },
+        "specialties": { "type": "array", "items": { "type": "string", "enum": ["colloquial", "quran", "kids"] } }
+      },
+      "required": ["id", "name", "profilePictureUrl", "headline", "bio", "hourlyRate", "rating", "specialties"]
     }
   },
   "auth": {
-    "providers": [
-      "password",
-      "anonymous"
-    ]
+    "providers": ["password", "google.com"]
   },
   "firestore": {
     "structure": [
@@ -102,39 +71,18 @@
         "path": "/users/{userId}",
         "definition": {
           "entityName": "User",
-          "schema": {
-            "$ref": "#/backend/entities/User"
-          },
-          "description": "Collection for storing user profiles. Secured by user ID.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "The unique identifier for the user."
-            }
-          ]
+          "schema": { "$ref": "#/entities/User" },
+          "description": "Collection for storing user profiles. Secured by user ID."
         }
       },
       {
-        "path": "/users/{userId}/firebaseProjects/{projectId}",
+        "path": "/teachers/{teacherId}",
         "definition": {
-          "entityName": "FirebaseProject",
-          "schema": {
-            "$ref": "#/backend/entities/FirebaseProject"
-          },
-          "description": "Subcollection for storing Firebase projects associated with a specific user. Secured by user ID.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "The unique identifier for the user."
-            },
-            {
-              "name": "projectId",
-              "description": "The unique identifier for the Firebase project."
-            }
-          ]
+          "entityName": "Teacher",
+          "schema": { "$ref": "#/entities/Teacher" },
+          "description": "Collection for storing public teacher profiles."
         }
       }
-    ],
-    "reasoning": "The Firestore structure is designed to ensure Authorization Independence, DBAC, and QAPs. It leverages path-based ownership for `FirebaseProject` entities, associating them directly with user documents to simplify access control. Denormalization is not explicitly needed here, as direct parent-child relationships support atomic operations without requiring `get()` calls in security rules.  Homogeneous Security Posture is enforced by dedicating collections to specific entity types (users and projects), each with distinct security needs. Access Modeling relies on Path-Based ownership (`/users/{userId}/firebaseProjects/{projectId}`) for private user data. The structure facilitates secure list operations (QAPs) because FirebaseProjects are secured by user ID."
+    ]
   }
 }
