@@ -39,6 +39,12 @@ export function Header() {
             >
               Quran
             </Link>
+             <Link
+              href="/sunnah"
+              className="transition-colors hover:text-foreground/80 text-foreground/60"
+            >
+              Sunnah
+            </Link>
             <Link
               href="/museum"
               className="transition-colors hover:text-foreground/80 text-foreground/60"
