@@ -1,0 +1,10 @@
+{
+  "placeholderImages": [
+    {
+      "id": "user-avatar",
+      "description": "User avatar for navigation",
+      "imageUrl": "https://i.pravatar.cc/150?u=a042581f4e29026704d",
+      "imageHint": "person portrait"
+    }
+  ]
+}
