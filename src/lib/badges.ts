@@ -1,5 +1,13 @@
-import { Crown, BookOpen, MessageSquare, Star, type LucideIcon } from 'lucide-react';
+import { Smile, Mic, Crown, Medal, type LucideIcon } from 'lucide-react';
 
+// Enum to define unique badge names
+export const enum BadgeName {
+  FirstLogin = 'first_login',
+  MarketDialogue = 'market_dialogue',
+  PerfectPronunciation = 'perfect_pronunciation',
+}
+
+// Interface for badge information
 export interface BadgeInfo {
   name: string;
   description: string;
@@ -7,33 +15,33 @@ export interface BadgeInfo {
   color: string;
 }
 
-const badgeList: Record<string, BadgeInfo> = {
-  first_login: {
-    name: 'Newcomer',
-    description: 'You have started your journey!',
-    icon: Star,
+// A record mapping badge names to their detailed information
+export const BADGE_DEFINITIONS: Record<BadgeName, BadgeInfo> = {
+  [BadgeName.FirstLogin]: {
+    name: 'تذكرة الدخول الملكية',
+    description: 'مُنحت عند دخول المملكة لأول مرة. أهلاً بكِ!',
+    icon: Crown,
     color: '#FFD700', // Gold
   },
-  first_lesson: {
-    name: 'Eager Student',
-    description: 'You completed your first lesson.',
-    icon: BookOpen,
-    color: '#4682B4', // SteelBlue
+  [BadgeName.MarketDialogue]: {
+    name: 'خبيرة حوارات السوق',
+    description: 'مُنحت لإتقان تحدي الحوار في السوق بنجاح.',
+    icon: Smile,
+    color: '#34D399', // Emerald
   },
-  first_chat: {
-      name: 'Social Butterfly',
-      description: 'You started your first conversation.',
-      icon: MessageSquare,
-      color: '#32CD32' // LimeGreen
+  [BadgeName.PerfectPronunciation]: {
+    name: 'صوت حتشبسوت',
+    description: 'مُنحت لتحقيق نطق مثالي في تحدي قوة حتشبسوت.',
+    icon: Mic,
+    color: '#60A5FA', // Blue
   },
-  king_tut: {
-      name: 'King Tut',
-      description: 'You have achieved royal status!',
-      icon: Crown,
-      color: '#FF6347' // Tomato
-  }
 };
 
-export const getBadgeByName = (name: string): BadgeInfo | undefined => {
-  return badgeList[name];
-};
+/**
+ * Retrieves badge information by its name (enum value).
+ * @param name The name of the badge (from the Badge enum).
+ * @returns The BadgeInfo object or null if not found.
+ */
+export function getBadgeByName(name: string): BadgeInfo | null {
+  return BADGE_DEFINITIONS[name as BadgeName] || null;
+}

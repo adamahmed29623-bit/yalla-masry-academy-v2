@@ -2,29 +2,8 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
+import { ARTIFACT_DATA, Artifacts } from '@/lib/museum-data';
 
-const ARTIFACTS: { [key: string]: any } = {
-    'mask': { 
-        title: 'قناع توت عنخ آمون', 
-        desc: 'قناع من الذهب الخالص، مطعم بالأحجار الكريمة والزجاج الملون. يعتبر من أروع الكنوز التي عُثر عليها في مقبرة الفرعون الذهبي.', 
-        pos: [0, 10, -50] 
-    },
-    'rosetta': { 
-        title: 'حجر رشيد', 
-        desc: 'مرسوم ملكي صدر في ممفيس، مصر، عام 196 قبل الميلاد. كان مفتاح فك رموز الكتابة الهيروغليفية المصرية.', 
-        pos: [-50, 10, 0] 
-    },
-     'sarcophagus': { 
-        title: 'تابوت حجري', 
-        desc: 'تابوت ضخم من الجرانيت، كان يستخدم لحفظ المومياء. النقوش عليه تروي قصة المتوفى وتدعو له بالخلود في العالم الآخر.', 
-        pos: [50, 5, 20] 
-    },
-     'cat_statue': { 
-        title: 'تمثال القطة باستت', 
-        desc: 'كانت القطط مقدسة في مصر القديمة وترتبط بالإلهة باستت، إلهة المنزل والخصوبة. كانت هذه التماثيل تقدم كقرابين في المعابد.', 
-        pos: [-20, 5, 40] 
-    }
-};
 
 const MuseumPage = () => {
     const mountRef = useRef<HTMLDivElement>(null);
@@ -124,25 +103,25 @@ const MuseumPage = () => {
         scene.add(sphere);
 
         // --- Artifacts and Markers ---
-        Object.keys(ARTIFACTS).forEach(key => {
-            const artifact = ARTIFACTS[key];
+        Object.keys(ARTIFACT_DATA).forEach(key => {
+            const artifact = ARTIFACT_DATA[key];
             const box = new THREE.Mesh(new THREE.BoxGeometry(5, 5, 5), new THREE.MeshStandardMaterial({ color: 0xFFD700, emissive: 0xccab00, emissiveIntensity: 0.3 }));
-            box.position.set(artifact.pos[0], artifact.pos[1], artifact.pos[2]);
+            box.position.copy(artifact.position);
             box.userData = { id: key };
             scene.add(box);
             
             // Create DOM marker
             const div = document.createElement('div');
             div.className = 'artifact-marker';
-            div.innerHTML = '<i class="fas fa-eye"></i>';
+            div.innerHTML = `<i class="${artifact.icon}"></i>`;
             div.onclick = () => {
                 if (artifactTitleRef.current) artifactTitleRef.current.innerText = artifact.title;
-                if (artifactDescRef.current) artifactDescRef.current.innerText = artifact.desc;
+                if (artifactDescRef.current) artifactDescRef.current.innerText = artifact.description;
                 if (infoPanelRef.current) infoPanelRef.current.classList.add('visible');
-                if (speakBtnRef.current) speakBtnRef.current.onclick = () => speak(artifact.desc);
+                if (speakBtnRef.current) speakBtnRef.current.onclick = () => speak(artifact.description);
             };
             if(markersContainerRef.current) markersContainerRef.current.appendChild(div);
-            artifactMarkersRef.current[key] = { el: div, pos: new THREE.Vector3(...artifact.pos) };
+            artifactMarkersRef.current[key] = { el: div, pos: artifact.position.clone() };
         });
 
         // --- Animation Loop ---

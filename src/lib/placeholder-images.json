@@ -1,70 +1,115 @@
 {
   "placeholderImages": [
     {
-      "id": "user-avatar",
-      "description": "User avatar for navigation",
-      "imageUrl": "https://i.pravatar.cc/150?u=a042581f4e29026704d",
-      "imageHint": "person portrait"
-    },
-    {
-      "id": "coloring-tut",
-      "description": "Coloring page image of Tutankhamun",
-      "imageUrl": "https://i.imgur.com/Q2yT3p9.png",
-      "imageHint": "coloring page tutankhamun"
+      "id": "pyramids-hero",
+      "description": "A beautiful cinematic shot of the pyramids at sunset",
+      "imageUrl": "https://images.unsplash.com/photo-1590164935905-842c9de25a80?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxweXJhbWlkcyUyMHN1bnNldHxlbnwwfHx8fDE3NjYwMjE0ODR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "pyramids sunset"
     },
     {
       "id": "animal-cat",
-      "description": "A cat",
-      "imageUrl": "https://images.unsplash.com/photo-1472491235688-bdc81a63246e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjYXR8ZW58MHx8fHwxNzY2NzU5NzI0fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "cat",
+      "description": "A cute cat",
+      "imageUrl": "https://images.unsplash.com/photo-1615497001839-b0a0eac3274c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjdXRlJTIwY2F0fGVufDB8fHx8MTc2NTg0MzY3NHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cute cat",
       "metadata": {
         "name": "قطة"
       }
     },
     {
       "id": "animal-dog",
-      "description": "A dog",
-      "imageUrl": "https://images.unsplash.com/photo-1504826260979-242151ee45b7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxkb2d8ZW58MHx8fHwxNzY2NzI5MjgwfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "dog",
+      "description": "A friendly dog",
+      "imageUrl": "https://images.unsplash.com/photo-1650062416746-3c7295e03426?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxmcmllbmRseSUyMGRvZ3xlbnwwfHx8fDE3NjU4MTEzNzh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "friendly dog",
       "metadata": {
         "name": "كلب"
       }
     },
     {
-      "id": "animal-bird",
-      "description": "A bird",
-      "imageUrl": "https://images.unsplash.com/photo-1606567595334-d39972c85dbe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxiaXJkfGVufDB8fHx8MTc2Njc1OTcyNHww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "bird",
-      "metadata": {
-        "name": "عصفور"
-      }
-    },
-    {
-      "id": "animal-sheep",
-      "description": "A sheep",
-      "imageUrl": "https://images.unsplash.com/photo-1528709024086-98a7672e0b9d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8c2hlZXB8ZW58MHx8fHwxNzY2NzU5NzI0fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "sheep",
-      "metadata": {
-        "name": "خروف"
-      }
-    },
-    {
       "id": "animal-horse",
-      "description": "A horse",
-      "imageUrl": "https://images.unsplash.com/photo-1513966007261-5a86a5284471?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8aG9yc2V8ZW58MHx8fHwxNzY2NzU5NzI0fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "horse",
+      "description": "A majestic horse",
+      "imageUrl": "https://images.unsplash.com/photo-1542731367-c646d21238e5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxtYWplc3RpYyUyMGhvcnNlfGVufDB8fHx8MTc2NTgxMTM3N3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "majestic horse",
       "metadata": {
         "name": "حصان"
       }
     },
     {
-      "id": "animal-cricket",
-      "description": "A cricket",
-      "imageUrl": "https://images.unsplash.com/photo-1609159127856-85b6813a4823?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjcmlja2V0JTIwYnVnfGVufDB8fHx8MTc2Njc1OTcyNHww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "cricket bug",
+      "id": "animal-donkey",
+      "description": "A funny donkey",
+      "imageUrl": "https://images.unsplash.com/photo-1667070716162-0cb554c45f3c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxmdW5ueSUyMGRvbmtleXxlbnwwfHx8fDE3NjU4MTEzNzh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "funny donkey",
       "metadata": {
-        "name": "صرصور"
+        "name": "حمار"
       }
+    },
+    {
+      "id": "animal-camel",
+      "description": "A desert camel",
+      "imageUrl": "https://images.unsplash.com/photo-1574545190184-d67b04202272?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxkZXNlcnQlMjBjYW1lbHxlbnwwfHx8fDE3NjU4MTEzNzd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "desert camel",
+      "metadata": {
+        "name": "جمل"
+      }
+    },
+    {
+      "id": "animal-duck",
+      "description": "A cute duckling",
+      "imageUrl": "https://images.unsplash.com/photo-1686483287041-5ba0fc488cb1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjdXRlJTIwZHVja2xpbmd8ZW58MHx8fHwxNzY1ODExMzc3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cute duckling",
+      "metadata": {
+        "name": "بطة"
+      }
+    },
+    {
+      "id": "animal-sheep",
+      "description": "A fluffy sheep",
+      "imageUrl": "https://images.unsplash.com/photo-1698345470411-4e9cb72d8284?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxmbHVmZnklMjBzaGVlcHxlbnwwfHx8fDE3NjU4NjEwNzJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "fluffy sheep",
+      "metadata": {
+        "name": "خروف"
+      }
+    },
+    {
+      "id": "animal-cow",
+      "description": "A spotted cow",
+      "imageUrl": "https://images.unsplash.com/photo-1721369944881-a4434bdfcc22?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxzcG90dGVkJTIwY293fGVufDB8fHx8MTc2NTg2MTA3Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "spotted cow",
+      "metadata": {
+        "name": "بقرة"
+      }
+    },
+    {
+      "id": "animal-chicken",
+      "description": "A clucking chicken",
+      "imageUrl": "https://images.unsplash.com/photo-1543856967-ea9a54fd46a9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjbHVja2luZyUyMGNoaWNrZW58ZW58MHx8fHwxNzY1ODYxMDcyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "clucking chicken",
+      "metadata": {
+        "name": "فرخة"
+      }
+    },
+    {
+      "id": "nouf-character",
+      "description": "A stylized, friendly illustration of a Gulf woman.",
+      "imageUrl": "https://images.unsplash.com/photo-1751713971874-6c384101a5ef?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxndWxmJTIwd29tYW4lMjBpbGx1c3RyYXRpb258ZW58MHx8fHwxNzY2NDA5NDc0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "gulf woman illustration"
+    },
+    {
+      "id": "adventure-airport",
+      "description": "A bustling modern airport terminal.",
+      "imageUrl": "https://images.unsplash.com/photo-1553619948-505cc1cdc320?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxhaXJwb3J0JTIwdGVybWluYWx8ZW58MHx8fHwxNzY2Mzg0NjI0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "airport terminal"
+    },
+    {
+      "id": "adventure-market",
+      "description": "A vibrant, traditional Egyptian market (souq).",
+      "imageUrl": "https://images.unsplash.com/photo-1746274394128-fb4a9dc4af36?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxlZ3lwdGlhbiUyMG1hcmtldHxlbnwwfHx8fDE3NjY0MDk0NzR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "egyptian market"
+    },
+    {
+      "id": "adventure-restaurant",
+      "description": "A cozy Egyptian restaurant with traditional decor.",
+      "imageUrl": "https://images.unsplash.com/photo-1545659531-9a66f06e260a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxlZ3lwdGlhbiUyMHJlc3RhdXJhbnR8ZW58MHx8fHwxNzY2NDA5NDc0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "egyptian restaurant"
     }
   ]
 }
