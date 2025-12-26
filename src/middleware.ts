@@ -25,21 +25,31 @@ function getLocale(request: NextRequest): string | undefined {
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
-  if (
-    [
-      '/manifest.json',
-      '/favicon.ico',
-      // Your other files in `public`
-    ].includes(pathname)
-  )
-    return;
+  // List of public files to ignore from localization
+  const publicFiles = [
+    '/manifest.json',
+    '/favicon.ico',
+    // any other public files
+  ];
 
+  // Check if the request is for a static file or an API route.
+  if (
+    pathname.startsWith('/_next') ||
+    pathname.startsWith('/api/') ||
+    publicFiles.some((file) => pathname.endsWith(file))
+  ) {
+    return;
+  }
+  
+  // Check if there is any supported locale in the pathname
   const pathnameIsMissingLocale = i18n.locales.every(
     (locale) => !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`
   );
 
+  // Redirect if there is no locale
   if (pathnameIsMissingLocale) {
     const locale = getLocale(request);
+
     return NextResponse.redirect(
       new URL(
         `/${locale}${pathname.startsWith('/') ? '' : '/'}${pathname}`,

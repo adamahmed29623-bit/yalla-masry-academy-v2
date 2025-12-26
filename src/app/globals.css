@@ -4,34 +4,26 @@
 
 @layer base {
   :root {
-    --background: 220 40% 10%; /* Nile Dark Blue */
+    --background: 220 40% 9.5%; /* Nile Dark */
     --foreground: 45 30% 90%; /* Light Sand */
-
-    --card: 215 80% 25%; /* Nile Blue */
+    --card: 217 33% 18%; /* Card background */
     --card-foreground: 45 30% 90%;
-
     --popover: 220 40% 10%;
     --popover-foreground: 45 30% 90%;
-
     --primary: 45 40% 85%; /* Sand Ochre */
     --primary-foreground: 220 40% 10%;
-
-    --secondary: 217 33% 18%;
+    --secondary: 217 33% 25%;
     --secondary-foreground: 45 30% 90%;
-
     --muted: 217 33% 18%;
     --muted-foreground: 215 20% 65%;
-
     --accent: 51 100% 50%; /* Gold Accent */
     --accent-foreground: 220 40% 10%;
-
     --destructive: 0 63% 31%;
     --destructive-foreground: 45 30% 90%;
-
-    --border: 45 40% 65%; /* Sand Ochre as border */
-    --input: 217 33% 18%;
+    --border: 217 33% 28%;
+    --input: 217 33% 22%;
     --ring: 51 100% 50%; /* Gold Accent for focus rings */
-    --radius: 0.5rem;
+    --radius: 0.8rem;
   }
 }
 
@@ -41,31 +33,22 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: 'El Messiri', sans-serif;
   }
 }
 
-/* Custom CSS Variables for easier access in code if needed */
-:root {
-    --nile-dark: hsl(220 40% 10%);
-    --nile-blue: hsl(215 80% 25%);
-    --sand-ochre: hsl(45 40% 65%);
-    --gold-accent: hsl(51 100% 50%);
-    --dark-granite: #2a2a2a; /* Kept for compatibility if used somewhere */
-}
-
-/* Specific theme classes */
+/* Custom theme classes for convenience */
 .bg-nile-dark { background-color: hsl(var(--background)); }
 .bg-nile-blue { background-color: hsl(var(--card)); }
-.text-sand-ochre { color: var(--sand-ochre); }
-.text-gold-accent { color: var(--gold-accent); }
-.border-sand-ochre { border-color: var(--sand-ochre); }
-.border-gold-accent { border-color: var(--gold-accent); }
+.text-sand-ochre { color: hsl(var(--primary)); }
+.text-gold-accent { color: hsl(var(--accent)); }
+.border-sand-ochre { border-color: hsl(var(--primary)); }
+.border-gold-accent { border-color: hsl(var(--accent)); }
+.bg-kids-bg { background-color: #0b4e8d; } /* A specific blue for kids section */
+.utility-button {
+  @apply text-sm px-4 py-2;
+}
 
-
-/* Royal Title Style */
-.royal-title {
-  font-family: 'Cairo', sans-serif;
-  font-weight: 900;
-  color: var(--gold-accent);
+.font-headline {
+  font-family: 'Cairo', 'El Messiri', sans-serif;
+  font-weight: 700;
 }

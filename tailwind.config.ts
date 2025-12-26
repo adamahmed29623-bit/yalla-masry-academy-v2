@@ -3,9 +3,10 @@ import type { Config } from 'tailwindcss';
 const config: Config = {
   darkMode: ['class'],
   content: [
-    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    './pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './components/**/*.{js,ts,jsx,tsx,mdx}',
+    './app/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/**/*.{ts,tsx}',
   ],
   prefix: "",
   theme: {
@@ -20,6 +21,8 @@ const config: Config = {
       fontFamily: {
         'body': ['"El Messiri"', 'sans-serif'],
         'display': ['Cairo', 'sans-serif'],
+        'headline': ['Cairo', 'El Messiri', 'sans-serif'],
+        'amiri-quran': ['"Amiri Quran"', 'serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -55,7 +58,7 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        'nile-dark': 'hsl(var(--background))',
+         'nile-dark': 'hsl(var(--background))',
         'nile-blue': 'hsl(var(--card))',
         'sand-ochre': 'hsl(var(--primary))',
         'gold-accent': 'hsl(var(--accent))',
