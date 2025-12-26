@@ -18,7 +18,8 @@
         "gulf_council": "Conseil du Golfe",
         "teacher_dashboard": "TdB Enseignant",
         "animal_sounds": "Sons d'Animaux",
-        "coloring_game": "Jeu de Coloriage"
+        "coloring_game": "Jeu de Coloriage",
+        "admin_dashboard": "Admin"
     },
     "user_nav": {
         "sign_in": "Se Connecter",

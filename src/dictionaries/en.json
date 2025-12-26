@@ -18,7 +18,8 @@
         "gulf_council": "Gulf Council",
         "teacher_dashboard": "Teacher Dashboard",
         "animal_sounds": "Animal Sounds",
-        "coloring_game": "Coloring Game"
+        "coloring_game": "Coloring Game",
+        "admin_dashboard": "Admin"
     },
     "user_nav": {
         "sign_in": "Sign In",

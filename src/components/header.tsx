@@ -4,9 +4,28 @@ import { UserNav } from '@/components/user-nav'
 import { Button } from '@/components/ui/button'
 import { getDictionary } from '@/dictionaries'
 import { type Locale } from '@/i18n-config'
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+import { Menu } from 'lucide-react'
 
 export async function Header({ lang }: { lang: Locale }) {
   const dict = await getDictionary(lang);
+
+  const navLinks = [
+    { href: `/${lang}/dashboard`, label: dict.header.dashboard },
+    { href: `/${lang}/egyptian-school`, label: dict.header.school },
+    { href: `/${lang}/teachers`, label: dict.header.teachers },
+    { href: `/${lang}/quran`, label: dict.header.quran },
+    { href: `/${lang}/sunnah`, label: dict.header.sunnah },
+    { href: `/${lang}/museum`, label: dict.header.museum },
+    { href: `/${lang}/challenge`, label: dict.header.challenge },
+    { href: `/${lang}/smart-adventure`, label: dict.header.smart_adventure },
+    { href: `/${lang}/store`, label: dict.header.store },
+    { href: `/${lang}/gulf`, label: dict.header.gulf_council },
+    { href: `/${lang}/teacher-dashboard`, label: dict.header.teacher_dashboard },
+    { href: `/${lang}/animal-sounds`, label: dict.header.animal_sounds },
+    { href: `/${lang}/coloring`, label: dict.header.coloring_game },
+    { href: `/${lang}/admin/dashboard`, label: 'Admin' },
+  ];
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -19,86 +38,48 @@ export async function Header({ lang }: { lang: Locale }) {
             </span>
           </Link>
           <nav className="flex items-center space-x-6 text-sm font-medium">
-             <Link
-              href={`/${lang}/dashboard`}
-              className="transition-colors hover:text-foreground/80 text-foreground/60"
-            >
-              {dict.header.dashboard}
-            </Link>
-            <Link
-              href={`/${lang}/egyptian-school`}
-              className="transition-colors hover:text-foreground/80 text-foreground/60"
-            >
-              {dict.header.school}
-            </Link>
-            <Link
-              href={`/${lang}/teachers`}
-              className="transition-colors hover:text-foreground/80 text-foreground/60"
-            >
-              {dict.header.teachers}
-            </Link>
-            <Link
-              href={`/${lang}/quran`}
-              className="transition-colors hover:text-foreground/80 text-foreground/60"
-            >
-              {dict.header.quran}
-            </Link>
-             <Link
-              href={`/${lang}/sunnah`}
-              className="transition-colors hover:text-foreground/80 text-foreground/60"
-            >
-              {dict.header.sunnah}
-            </Link>
-            <Link
-              href={`/${lang}/museum`}
-              className="transition-colors hover:text-foreground/80 text-foreground/60"
-            >
-              {dict.header.museum}
-            </Link>
-             <Link
-              href={`/${lang}/challenge`}
-              className="transition-colors hover:text-foreground/80 text-foreground/60"
-            >
-              {dict.header.challenge}
-            </Link>
-             <Link
-              href={`/${lang}/smart-adventure`}
-              className="transition-colors hover:text-foreground/80 text-foreground/60"
-            >
-              {dict.header.smart_adventure}
-            </Link>
-            <Link
-              href={`/${lang}/store`}
-              className="transition-colors hover:text-foreground/80 text-foreground/60"
-            >
-              {dict.header.store}
-            </Link>
-            <Link
-              href={`/${lang}/gulf`}
-              className="transition-colors hover:text-foreground/80 text-foreground/60"
-            >
-              {dict.header.gulf_council}
-            </Link>
-             <Link
-              href={`/${lang}/teacher-dashboard`}
-              className="transition-colors hover:text-foreground/80 text-foreground/60"
-            >
-              {dict.header.teacher_dashboard}
-            </Link>
-            <Link
-              href={`/${lang}/animal-sounds`}
-              className="transition-colors hover:text-foreground/80 text-foreground/60"
-            >
-              {dict.header.animal_sounds}
-            </Link>
-            <Link
-              href={`/${lang}/coloring`}
-              className="transition-colors hover:text-foreground/80 text-foreground/60"
-            >
-              {dict.header.coloring_game}
-            </Link>
+            {navLinks.slice(0, 5).map(link => (
+               <Link
+                key={link.href}
+                href={link.href}
+                className="transition-colors hover:text-foreground/80 text-foreground/60"
+              >
+                {link.label}
+              </Link>
+            ))}
           </nav>
         </div>
+
+        <div className="md:hidden">
+           <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <Menu />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left">
+              <Link href={`/${lang}`} className="mr-6 flex items-center space-x-2 mb-6">
+                <FirebaseLogo className="h-6 w-6 text-primary" />
+                <span className="font-bold sm:inline-block font-headline">
+                  Yalla Masry Academy
+                </span>
+              </Link>
+              <nav className="flex flex-col space-y-4">
+                 {navLinks.map(link => (
+                   <Link
+                    key={link.href}
+                    href={link.href}
+                    className="transition-colors hover:text-foreground/80 text-foreground/80"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
+            </SheetContent>
+          </Sheet>
+        </div>
+
+
         <div className="flex flex-1 items-center justify-end space-x-4">
           <UserNav lang={lang} dict={dict.user_nav} />
         </div>

@@ -18,7 +18,8 @@
         "gulf_council": "مجلس الخليج",
         "teacher_dashboard": "لوحة تحكم المعلمة",
         "animal_sounds": "أصوات الحيوانات",
-        "coloring_game": "لعبة التلوين"
+        "coloring_game": "لعبة التلوين",
+        "admin_dashboard": "الإدارة"
     },
     "user_nav": {
         "sign_in": "تسجيل الدخول",
