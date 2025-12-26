@@ -1,4 +1,4 @@
-{"use server";
+'use server';
 
 import { generateSecurityRules } from "@/ai/flows/generate-security-rules";
 import { suggestRuleImprovements } from "@/ai/flows/suggest-rule-improvements";
@@ -133,5 +133,4 @@ export async function getDialogueEvaluation(
         console.error("Dialogue Evaluation error:", e);
         return { success: false, error: "Failed to get AI evaluation." };
     }
-}
 }
