@@ -1,29 +1,23 @@
 'use client';
 
-import { placeholderTeachers } from "@/lib/placeholder-data";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Image from "next/image";
 import { Star, Wallet, Clock, BookOpen, Loader2, Video } from "lucide-react";
-
-// This is a temporary function to find a teacher. 
-// In a real app, you would fetch this data from Firestore using the `id` param.
-const getTeacherById = (id: string) => placeholderTeachers.find(t => t.id === id);
+import { useDoc, useFirebase, useMemoFirebase } from "@/firebase";
+import { doc } from "firebase/firestore";
 
 
 export default function TeacherProfilePage({ params }: { params: { id: string } }) {
-  // const { firestore } = useFirebase();
-  // const teacherRef = useMemoFirebase(() => {
-  //   if (!firestore) return null;
-  //   return doc(firestore, 'teachers', params.id);
-  // }, [firestore, params.id]);
-  // const { data: teacher, isLoading } = useDoc(teacherRef);
+  const { firestore } = useFirebase();
+  const teacherRef = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return doc(firestore, 'teachers', params.id);
+  }, [firestore, params.id]);
+  const { data: teacher, isLoading } = useDoc(teacherRef);
   
-  const teacher = getTeacherById(params.id);
-  const isLoading = false;
-
   const specialtiesMap: { [key: string]: string } = {
     colloquial: 'اللهجة العامية',
     quran: 'القرآن الكريم والتجويد',
@@ -103,7 +97,7 @@ export default function TeacherProfilePage({ params }: { params: { id: string } 
                 <CardTitle className="font-headline">تقييمات الطلاب</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                {teacher.reviews.map(review => (
+                {(teacher.reviews || []).map((review: any) => (
                   <div key={review.id} className="flex gap-4">
                     <Avatar>
                       <AvatarFallback>{review.studentName.charAt(0)}</AvatarFallback>
