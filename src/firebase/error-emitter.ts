@@ -1,64 +1,63 @@
 'use client';
+
 import { FirestorePermissionError } from '@/firebase/errors';
 
-/**
- * Defines the shape of all possible events and their corresponding payload types.
- * This centralizes event definitions for type safety across the application.
- */
-export interface AppEvents {
-  'permission-error': FirestorePermissionError;
-}
+// Define the structure of events and their payloads.
+type Events = {
+  'permission-error': (error: FirestorePermissionError) => void;
+  // We can add other global error types here if needed.
+};
 
-// A generic type for a callback function.
-type Callback<T> = (data: T) => void;
+type EventName = keyof Events;
 
 /**
- * A strongly-typed pub/sub event emitter.
- * It uses a generic type T that extends a record of event names to payload types.
+ * A simple, typed event emitter for handling global application events,
+ * specifically for propagating Firestore permission errors to a global listener.
  */
-function createEventEmitter<T extends Record<string, any>>() {
-  // The events object stores arrays of callbacks, keyed by event name.
-  // The types ensure that a callback for a specific event matches its payload type.
-  const events: { [K in keyof T]?: Array<Callback<T[K]>> } = {};
+class TypedEventEmitter {
+  private listeners: { [K in EventName]?: ((...args: Parameters<Events[K]>) => void)[] } = {};
 
-  return {
-    /**
-     * Subscribe to an event.
-     * @param eventName The name of the event to subscribe to.
-     * @param callback The function to call when the event is emitted.
-     */
-    on<K extends keyof T>(eventName: K, callback: Callback<T[K]>) {
-      if (!events[eventName]) {
-        events[eventName] = [];
-      }
-      events[eventName]?.push(callback);
-    },
+  /**
+   * Subscribes a listener to a specific event.
+   * @param event The name of the event to listen for.
+   * @param callback The function to execute when the event is emitted.
+   */
+  on<E extends EventName>(event: E, callback: Events[E]): void {
+    if (!this.listeners[event]) {
+      this.listeners[event] = [];
+    }
+    this.listeners[event]!.push(callback as any);
+  }
 
-    /**
-     * Unsubscribe from an event.
-     * @param eventName The name of the event to unsubscribe from.
-     * @param callback The specific callback to remove.
-     */
-    off<K extends keyof T>(eventName: K, callback: Callback<T[K]>) {
-      if (!events[eventName]) {
-        return;
-      }
-      events[eventName] = events[eventName]?.filter(cb => cb !== callback);
-    },
+  /**
+   * Unsubscribes a listener from a specific event.
+   * @param event The name of the event to unsubscribe from.
+   * @param callback The listener function to remove.
+   */
+  off<E extends EventName>(event: E, callback: Events[E]): void {
+    if (!this.listeners[event]) {
+      return;
+    }
+    this.listeners[event] = this.listeners[event]!.filter(
+      (listener) => listener !== (callback as any)
+    );
+  }
 
-    /**
-     * Publish an event to all subscribers.
-     * @param eventName The name of the event to emit.
-     * @param data The data payload that corresponds to the event's type.
-     */
-    emit<K extends keyof T>(eventName: K, data: T[K]) {
-      if (!events[eventName]) {
-        return;
-      }
-      events[eventName]?.forEach(callback => callback(data));
-    },
-  };
+  /**
+   * Emits an event, calling all subscribed listeners with the provided arguments.
+   * @param event The name of the event to emit.
+   * @param args The arguments to pass to the listeners.
+   */
+  emit<E extends EventName>(event: E, ...args: Parameters<Events[E]>): void {
+    if (!this.listeners[event]) {
+      return;
+    }
+    this.listeners[event]!.forEach((listener) => {
+      listener(...args);
+    });
+  }
 }
 
-// Create and export a singleton instance of the emitter, typed with our AppEvents interface.
-export const errorEmitter = createEventEmitter<AppEvents>();
+// Create and export a singleton instance of the event emitter.
+// This ensures that all parts of the app use the same event bus.
+export const errorEmitter = new TypedEventEmitter();
