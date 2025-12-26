@@ -29,6 +29,11 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+
+    /* Custom Colors */
+    --nile-blue: 210 70% 10%; /* A very dark, rich blue */
+    --sand-ochre: 35 65% 80%; /* A light, sandy yellow-orange */
+    --gold-accent: 45 85% 60%; /* A vibrant, rich gold */
   }
   .dark {
     --background: 200 15% 10%;
@@ -55,6 +60,11 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+
+    /* Custom Colors - Dark mode can be the same or adjusted */
+    --nile-blue: 210 70% 8%;
+    --sand-ochre: 35 55% 75%;
+    --gold-accent: 45 80% 55%;
   }
 }
 

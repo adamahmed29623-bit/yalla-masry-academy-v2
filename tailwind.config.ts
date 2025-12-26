@@ -63,6 +63,9 @@ const config: Config = {
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))',
         },
+        'nile-blue': 'hsl(var(--nile-blue))',
+        'sand-ochre': 'hsl(var(--sand-ochre))',
+        'gold-accent': 'hsl(var(--gold-accent))',
       },
       borderRadius: {
         lg: 'var(--radius)',

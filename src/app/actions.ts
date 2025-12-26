@@ -3,6 +3,7 @@
 import { generateSecurityRules } from "@/ai/flows/generate-security-rules";
 import { suggestRuleImprovements } from "@/ai/flows/suggest-rule-improvements";
 import { handleAdventure } from "@/ai/flows/smart-adventure-flow";
+import { getAnimalSoundFlow } from "@/ai/flows/animal-sound-flow";
 import { z } from "zod";
 
 const generateRulesSchema = z.object({
@@ -86,5 +87,19 @@ export async function handleSmartAdventure(prevState: any, formData: FormData) {
         console.error(error);
         return { message: "AI generation failed.", text: "حصلت مشكلة في الاتصال بـ Gemini، حاول تاني يا بطل!" };
     }
+}
+
+const animalSoundSchema = z.object({
+  animalName: z.string(),
+});
+
+export async function getAnimalSound(
+  input: z.infer<typeof animalSoundSchema>
+) {
+  const validatedFields = animalSoundSchema.safeParse(input);
+  if (!validatedFields.success) {
+    throw new Error('Invalid input for getAnimalSound');
+  }
+  return await getAnimalSoundFlow(validatedFields.data);
 }
 }
