@@ -1,6 +1,7 @@
-import { redirect } from 'next/navigation'
+import { redirect } from 'next/navigation';
 
-// The root page will redirect to the dashboard, which will handle authentication checks.
-export default function Home() {
-  redirect('/dashboard')
+// This is a temporary redirect to the default locale.
+// The middleware will handle the actual language detection and redirection.
+export default function RootPage() {
+  redirect('/en');
 }

@@ -1,0 +1,30 @@
+
+{
+    "landing": {
+        "main_title": "أهلاً بك في أكاديمية يلا مصري",
+        "subtitle": "بوابتك لتعلم اللهجة المصرية الأصيلة واستكشاف كنوز الثقافة الفرعونية.",
+        "dashboard_button": "لوحة التحكم"
+    },
+    "header": {
+        "dashboard": "لوحة التحكم",
+        "school": "المدرسة",
+        "teachers": "المعلمات",
+        "quran": "القرآن",
+        "sunnah": "السنة",
+        "museum": "المتحف",
+        "challenge": "تحدي",
+        "smart_adventure": "المغامرة الذكية",
+        "store": "المتجر",
+        "gulf_council": "مجلس الخليج",
+        "teacher_dashboard": "لوحة تحكم المعلمة",
+        "animal_sounds": "أصوات الحيوانات",
+        "coloring_game": "لعبة التلوين"
+    },
+    "user_nav": {
+        "sign_in": "تسجيل الدخول",
+        "profile": "الملف الشخصي",
+        "billing": "الفواتير",
+        "settings": "الإعدادات",
+        "log_out": "تسجيل الخروج"
+    }
+}

@@ -1,0 +1,30 @@
+
+{
+    "landing": {
+        "main_title": "Welcome to Yalla Masry Academy",
+        "subtitle": "Your gateway to learning the authentic Egyptian dialect and exploring the treasures of Pharaonic culture.",
+        "dashboard_button": "Go to Dashboard"
+    },
+    "header": {
+        "dashboard": "Dashboard",
+        "school": "School",
+        "teachers": "Teachers",
+        "quran": "Quran",
+        "sunnah": "Sunnah",
+        "museum": "Museum",
+        "challenge": "Challenge",
+        "smart_adventure": "Smart Adventure",
+        "store": "Store",
+        "gulf_council": "Gulf Council",
+        "teacher_dashboard": "Teacher Dashboard",
+        "animal_sounds": "Animal Sounds",
+        "coloring_game": "Coloring Game"
+    },
+    "user_nav": {
+        "sign_in": "Sign In",
+        "profile": "Profile",
+        "billing": "Billing",
+        "settings": "Settings",
+        "log_out": "Log out"
+    }
+}

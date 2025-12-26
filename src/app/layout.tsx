@@ -1,21 +1,23 @@
-import type {Metadata} from 'next';
+import type { Metadata } from 'next';
 import './globals.css';
-import { Toaster } from "@/components/ui/toaster"
+import { Toaster } from "@/components/ui/toaster";
 import { Header } from '@/components/header';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 
 export const metadata: Metadata = {
   title: 'Yalla Masry Academy',
-  description: 'Manage your Firebase projects with ease.',
+  description: 'Your gateway to learning the authentic Egyptian dialect and exploring the treasures of Pharaonic culture.',
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+  params,
+}: {
   children: React.ReactNode;
-}>) {
+  params: { lang: string };
+}) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={params.lang ?? 'en'} dir={params.lang === 'ar' ? 'rtl' : 'ltr'} suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -24,7 +26,7 @@ export default function RootLayout({
       </head>
       <body className="font-body antialiased min-h-screen flex flex-col bg-background">
         <FirebaseClientProvider>
-          <Header />
+          <Header lang={params.lang} />
           <main className="flex-1">{children}</main>
           <Toaster />
         </FirebaseClientProvider>

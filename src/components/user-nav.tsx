@@ -15,6 +15,15 @@ import { CreditCard, LogOut, Settings, User, LogIn, Loader2 } from "lucide-react
 import { useFirebase } from "@/firebase"
 import { signOut } from "firebase/auth"
 import Link from "next/link"
+import React from "react"
+import { type getDictionary } from "@/dictionaries"
+
+type UserNavDict = Awaited<ReturnType<typeof getDictionary>>['user_nav'];
+
+interface UserNavProps {
+  lang: string;
+  dict: UserNavDict;
+}
 
 function getInitials(name?: string | null) {
   if (!name) return "U";
@@ -25,7 +34,7 @@ function getInitials(name?: string | null) {
   return name.substring(0, 2);
 }
 
-export function UserNav() {
+export function UserNav({ lang, dict }: UserNavProps) {
   const { user, isUserLoading, auth } = useFirebase();
 
   const handleLogout = () => {
@@ -42,9 +51,9 @@ export function UserNav() {
   if (!user) {
     return (
       <Button asChild>
-        <Link href="/login">
+        <Link href={`/${lang}/login`}>
             <LogIn className="mr-2 h-4 w-4" />
-            Sign In
+            {dict.sign_in}
         </Link>
       </Button>
     )
@@ -73,21 +82,21 @@ export function UserNav() {
         <DropdownMenuGroup>
           <DropdownMenuItem>
             <User className="mr-2 h-4 w-4" />
-            <span>Profile</span>
+            <span>{dict.profile}</span>
           </DropdownMenuItem>
           <DropdownMenuItem>
             <CreditCard className="mr-2 h-4 w-4" />
-            <span>Billing</span>
+            <span>{dict.billing}</span>
           </DropdownMenuItem>
           <DropdownMenuItem>
             <Settings className="mr-2 h-4 w-4" />
-            <span>Settings</span>
+            <span>{dict.settings}</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout}>
           <LogOut className="mr-2 h-4 w-4" />
-          <span>Log out</span>
+          <span>{dict.log_out}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

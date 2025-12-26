@@ -2,13 +2,17 @@ import Link from 'next/link'
 import { FirebaseLogo } from '@/components/icons'
 import { UserNav } from '@/components/user-nav'
 import { Button } from '@/components/ui/button'
+import { getDictionary } from '@/dictionaries'
+import { type Locale } from '@/i18n-config'
 
-export function Header() {
+export async function Header({ lang }: { lang: Locale }) {
+  const dict = await getDictionary(lang);
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 max-w-screen-2xl items-center">
-        <div className="mr-4 flex">
-          <Link href="/dashboard" className="mr-6 flex items-center space-x-2">
+        <div className="mr-4 hidden md:flex">
+          <Link href={`/${lang}`} className="mr-6 flex items-center space-x-2">
             <FirebaseLogo className="h-6 w-6 text-primary" />
             <span className="font-bold sm:inline-block font-headline">
               Yalla Masry Academy
@@ -16,87 +20,87 @@ export function Header() {
           </Link>
           <nav className="flex items-center space-x-6 text-sm font-medium">
              <Link
-              href="/dashboard"
+              href={`/${lang}/dashboard`}
               className="transition-colors hover:text-foreground/80 text-foreground/60"
             >
-              Dashboard
+              {dict.header.dashboard}
             </Link>
             <Link
-              href="/egyptian-school"
+              href={`/${lang}/egyptian-school`}
               className="transition-colors hover:text-foreground/80 text-foreground/60"
             >
-              المدرسة
+              {dict.header.school}
             </Link>
             <Link
-              href="/teachers"
+              href={`/${lang}/teachers`}
               className="transition-colors hover:text-foreground/80 text-foreground/60"
             >
-              Teachers
+              {dict.header.teachers}
             </Link>
             <Link
-              href="/quran"
+              href={`/${lang}/quran`}
               className="transition-colors hover:text-foreground/80 text-foreground/60"
             >
-              Quran
+              {dict.header.quran}
             </Link>
              <Link
-              href="/sunnah"
+              href={`/${lang}/sunnah`}
               className="transition-colors hover:text-foreground/80 text-foreground/60"
             >
-              Sunnah
+              {dict.header.sunnah}
             </Link>
             <Link
-              href="/museum"
+              href={`/${lang}/museum`}
               className="transition-colors hover:text-foreground/80 text-foreground/60"
             >
-              Museum
+              {dict.header.museum}
             </Link>
              <Link
-              href="/challenge"
+              href={`/${lang}/challenge`}
               className="transition-colors hover:text-foreground/80 text-foreground/60"
             >
-              Challenge
+              {dict.header.challenge}
             </Link>
              <Link
-              href="/smart-adventure"
+              href={`/${lang}/smart-adventure`}
               className="transition-colors hover:text-foreground/80 text-foreground/60"
             >
-              Smart Adventure
+              {dict.header.smart_adventure}
             </Link>
             <Link
-              href="/store"
+              href={`/${lang}/store`}
               className="transition-colors hover:text-foreground/80 text-foreground/60"
             >
-              Store
+              {dict.header.store}
             </Link>
             <Link
-              href="/gulf"
+              href={`/${lang}/gulf`}
               className="transition-colors hover:text-foreground/80 text-foreground/60"
             >
-              Gulf Council
+              {dict.header.gulf_council}
             </Link>
              <Link
-              href="/teacher-dashboard"
+              href={`/${lang}/teacher-dashboard`}
               className="transition-colors hover:text-foreground/80 text-foreground/60"
             >
-              Teacher Dashboard
+              {dict.header.teacher_dashboard}
             </Link>
             <Link
-              href="/animal-sounds"
+              href={`/${lang}/animal-sounds`}
               className="transition-colors hover:text-foreground/80 text-foreground/60"
             >
-              Animal Sounds
+              {dict.header.animal_sounds}
             </Link>
             <Link
-              href="/coloring"
+              href={`/${lang}/coloring`}
               className="transition-colors hover:text-foreground/80 text-foreground/60"
             >
-              Coloring Game
+              {dict.header.coloring_game}
             </Link>
           </nav>
         </div>
         <div className="flex flex-1 items-center justify-end space-x-4">
-          <UserNav />
+          <UserNav lang={lang} dict={dict.user_nav} />
         </div>
       </div>
     </header>
