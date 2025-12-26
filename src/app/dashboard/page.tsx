@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import { useState, useEffect } from 'react';
 import { useFirebase } from '@/firebase';
 import { Loader2, ArrowRight, Star, Gem, Trophy } from 'lucide-react';
@@ -8,7 +8,7 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { useDoc, useMemoFirebase } from '@/firebase';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc } from 'firebase/firestore';
 
 export default function DashboardPage() {
     const { user, firestore, isUserLoading } = useFirebase();
@@ -31,10 +31,12 @@ export default function DashboardPage() {
             localStorage.setItem('nilePoints', initialPoints.toString());
 
             // Listen for changes from other tabs (e.g., the store)
-            const handleStorageChange = () => {
-                const updatedPoints = localStorage.getItem('nilePoints');
-                if (updatedPoints) {
-                    setNilePoints(parseInt(updatedPoints, 10));
+            const handleStorageChange = (event: StorageEvent) => {
+                if (event.key === 'nilePoints' && event.newValue) {
+                    const updatedPoints = parseInt(event.newValue, 10);
+                    setNilePoints(updatedPoints);
+                    // Optional: Persist this change back to Firestore if needed
+                    // This can be wrapped in a function that debounces writes to avoid too many updates.
                 }
             };
             window.addEventListener('storage', handleStorageChange);
@@ -68,7 +70,7 @@ export default function DashboardPage() {
     }
     
     return (
-        <div className="container mx-auto py-10 space-y-8">
+        <div className="container mx-auto py-10 space-y-8" dir='rtl'>
             {/* Welcome Header */}
             <div className="p-6 rounded-lg bg-card border border-border">
                 <h1 className="text-3xl font-bold font-headline text-primary">أهلاً بعودتك، {userData.name}!</h1>
