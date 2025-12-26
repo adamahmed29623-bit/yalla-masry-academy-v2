@@ -60,6 +60,52 @@
         "specialties": { "type": "array", "items": { "type": "string", "enum": ["colloquial", "quran", "kids"] } }
       },
       "required": ["id", "name", "profilePictureUrl", "headline", "bio", "hourlyRate", "rating", "specialties"]
+    },
+    "AdventureChallenge": {
+      "title": "Adventure Challenge",
+      "description": "A challenge for Nouf's Journey, translating between Gulf and Egyptian dialects.",
+      "type": "object",
+      "properties": {
+        "category": { "type": "string", "description": "The situational category of the challenge (e.g., At the Market)." },
+        "gulf_phrase": { "type": "string", "description": "The phrase a Gulf speaker would use." },
+        "egyptian_phrase": { "type": "string", "description": "The equivalent phrase in the Egyptian dialect." },
+        "explanation": { "type": "string", "description": "An explanation of the cultural or linguistic nuance." }
+      },
+      "required": ["category", "gulf_phrase", "egyptian_phrase"]
+    },
+    "Book": {
+      "title": "Book",
+      "description": "A book in the digital Islamic library.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "author": { "type": "string" },
+        "category": { "type": "string", "description": "e.g., Tafsir, Hadith, History" },
+        "cover": { "type": "string", "format": "uri", "description": "URL for the book cover image." }
+      },
+      "required": ["title", "author", "category", "cover"]
+    },
+    "Hadith": {
+      "title": "Hadith",
+      "description": "A Prophetic Tradition (Hadith) in the Sunnah collection.",
+      "type": "object",
+      "properties": {
+        "topic": { "type": "string", "description": "The main topic of the hadith (e.g., Faith, Prayer)." },
+        "source": { "type": "string", "description": "The source of the hadith (e.g., Sahih Bukhari)." },
+        "text": { "type": "string", "description": "The full text of the hadith." }
+      },
+      "required": ["topic", "source", "text"]
+    },
+    "Phrase": {
+      "title": "Phrase",
+      "description": "A phrase or sentence for the phrasebook used in lessons.",
+      "type": "object",
+      "properties": {
+        "category": { "type": "string", "description": "The category of the phrase (e.g., Greetings, Shopping)." },
+        "text": { "type": "string", "description": "The phrase in Egyptian Arabic." },
+        "translation": { "type": "string", "description": "The English translation of the phrase." }
+      },
+      "required": ["category", "text", "translation"]
     }
   },
   "auth": {
@@ -81,6 +127,38 @@
           "entityName": "Teacher",
           "schema": { "$ref": "#/entities/Teacher" },
           "description": "Collection for storing public teacher profiles."
+        }
+      },
+      {
+        "path": "/adventure_challenges/{challengeId}",
+        "definition": {
+          "entityName": "AdventureChallenge",
+          "schema": { "$ref": "#/entities/AdventureChallenge" },
+          "description": "Content for Nouf's Journey challenges."
+        }
+      },
+      {
+        "path": "/books/{bookId}",
+        "definition": {
+          "entityName": "Book",
+          "schema": { "$ref": "#/entities/Book" },
+          "description": "Content for the digital library."
+        }
+      },
+      {
+        "path": "/hadiths/{hadithId}",
+        "definition": {
+          "entityName": "Hadith",
+          "schema": { "$ref": "#/entities/Hadith" },
+          "description": "Content for the Sunnah section."
+        }
+      },
+      {
+        "path": "/phrases/{phraseId}",
+        "definition": {
+          "entityName": "Phrase",
+          "schema": { "$ref": "#/entities/Phrase" },
+          "description": "Content for the phrasebook."
         }
       }
     ]
