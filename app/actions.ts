@@ -1,9 +1,12 @@
-{"use server";
+"use server";
 
 import { generateSecurityRules } from "@/ai/flows/generate-security-rules";
 import { suggestRuleImprovements } from "@/ai/flows/suggest-rule-improvements";
-import { getStorytellerAudio, StorytellerInputSchema } from "@/ai/flows/storyteller-flow";
 import { z } from "zod";
+import { handleAdventure } from "@/ai/flows/smart-adventure-flow";
+import { getAnimalSoundFlow } from "@/ai/flows/animal-sound-flow";
+import { getDialogueEvaluationFlow, DialogueEvaluationInputSchema, DialogueEvaluationOutput } from "@/ai/flows/dialogue-evaluation-flow";
+
 
 const generateRulesSchema = z.object({
   dataStructure: z.string().min(10, { message: "Please describe your data structure in more detail." }),
@@ -64,16 +67,56 @@ export async function handleSuggestImprovements(prevState: any, formData: FormDa
   }
 }
 
-export async function handleGetStory(input: z.infer<typeof StorytellerInputSchema>) {
-    const validatedFields = StorytellerInputSchema.safeParse(input);
+const adventureSchema = z.object({
+  userInput: z.string(),
+  taskType: z.enum(['challenge', 'correction']),
+});
+
+export async function handleSmartAdventure(prevState: any, formData: FormData) {
+    const validatedFields = adventureSchema.safeParse({
+      userInput: formData.get('userInput'),
+      taskType: formData.get('taskType'),
+    });
+
     if (!validatedFields.success) {
-        return { success: false, error: "Invalid input" };
+        return { message: "Invalid input.", text: "" };
+    }
+
+    try {
+        const result = await handleAdventure(validatedFields.data);
+        return { message: "success", text: result.text };
+    } catch (error) {
+        console.error(error);
+        return { message: "AI generation failed.", text: "حصلت مشكلة في الاتصال بـ Gemini، حاول تاني يا بطل!" };
+    }
+}
+
+const animalSoundSchema = z.object({
+  animalName: z.string(),
+});
+
+export async function getAnimalSound(
+  input: z.infer<typeof animalSoundSchema>
+) {
+  const validatedFields = animalSoundSchema.safeParse(input);
+  if (!validatedFields.success) {
+    throw new Error('Invalid input for getAnimalSound');
+  }
+  return await getAnimalSoundFlow(validatedFields.data);
+}
+
+export async function getDialogueEvaluation(
+    input: z.infer<typeof DialogueEvaluationInputSchema>
+): Promise<{ success: boolean; data?: DialogueEvaluationOutput; error?: string }> {
+    const validatedFields = DialogueEvaluationInputSchema.safeParse(input);
+    if (!validatedFields.success) {
+        return { success: false, error: "Invalid input for dialogue evaluation" };
     }
     try {
-        const result = await getStorytellerAudio(validatedFields.data);
-        return { success: true, audioDataUri: result.media };
+        const result = await getDialogueEvaluationFlow(validatedFields.data);
+        return { success: true, data: result };
     } catch (e) {
-        console.error("Storyteller error:", e);
-        return { success: false, error: "Failed to generate audio story." };
+        console.error("Dialogue Evaluation error:", e);
+        return { success: false, error: "Failed to get AI evaluation." };
     }
 }
