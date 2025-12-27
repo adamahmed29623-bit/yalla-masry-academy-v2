@@ -8,13 +8,14 @@ export const metadata: Metadata = {
   description: 'Your gateway to learning the authentic Egyptian dialect and exploring the treasures of Pharaonic culture.',
 };
 
+// التعديل هنا: أضفنا تعريف الـ Props بشكل يتوافق مع Next.js 15 لتجنب خطأ Vercel
 export default function RootLayout({
-  children
+  children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang='en' suppressHydrationWarning>
+    <html lang='ar' dir="rtl" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
