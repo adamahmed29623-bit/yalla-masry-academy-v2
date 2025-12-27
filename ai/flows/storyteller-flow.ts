@@ -1,16 +1,14 @@
 /**
  * محرك سرد القصص في الأكاديمية الملكية.
- * تم تصميمه ليعمل بذكاء وسلاسة داخل نظام Next.js.
  */
 
-export async function storytellerFlow(title: string, description: string): Promise<string> {
-  // التحقق من المدخلات لضمان عدم حدوث خطأ أثناء النشر
-  if (!title || !description) {
-    return "أهلاً بك في رحاب الأكاديمية. هذه القطعة الأثرية تحكي قصة عظمة أجدادنا.";
+export async function storytellerFlow(prompt: string): Promise<string> {
+  if (!prompt) {
+    throw new Error("يجب إدخال نص لبدء القصة");
   }
 
-  // صياغة النص بلهجة مصرية ملكية فخمة
-  const response = `يا أهلاً بيك في رحاب الأكاديمية الملكية.. حكاية "${title}" هي حكاية من قلب التاريخ، ${description}. وعشان إحنا ملوك، لازم تعرف إن القطعة دي مش مجرد أثر، دي روح وعظمة حضارة مش بتموت أبداً.`;
+  // الرد باللهجة المصرية الفريدة التي خططتِ لها
+  const response = `أهلاً بك في الأكاديمية الملكية! قصتك عن "${prompt}" يتم تحضيرها الآن بلمسة ملكية مصرية... حكاية من قلب التاريخ المصري العظيم.`;
   
   return response;
 }
