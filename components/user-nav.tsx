@@ -1,94 +1,97 @@
-import * as THREE from 'three';
+"use client"
 
-// 1. تعريف أنواع القطع (Artifact Types) لتنظيم المحتوى
-export type ArtifactCategory = 'statue' | 'scroll' | 'jewelry' | 'monument' | 'tool';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { CreditCard, LogOut, Settings, User, LogIn, Loader2 } from "lucide-react"
+import { useFirebase } from "@/firebase"
+import { signOut } from "firebase/auth"
+import Link from "next/link"
 
-// 2. الهيكل المطور للبيانات (Refactored ArtifactData)
-export type ArtifactData = {
-    id: string;
-    title: string;
-    description: string;
-    puzzle: string;
-    position: THREE.Vector3;
-    icon: string;
-    category: ArtifactCategory; // الإضافة الجديدة للتصنيف
-    rarity: 'common' | 'rare' | 'legendary'; // إضافة عامل الجذب (الندرة)
-    goal: boolean;
-    isExplored: boolean;
-    audioUrl?: string;
-    isPlaying?: boolean;
-};
+function getInitials(name?: string | null) {
+  if (!name) return "U";
+  const parts = name.split(" ");
+  if (parts.length > 1) {
+    return (parts[0][0] + (parts[parts.length - 1][0] || '')).toUpperCase();
+  }
+  return name.substring(0, 2).toUpperCase();
+}
 
-export type Artifacts = {
-    [key: string]: ArtifactData;
-};
+export function UserNav() {
+  const { user, isUserLoading, auth } = useFirebase();
 
-// 3. تحديث UserNavData بالهوية الجديدة للأكاديمية
-export const UserNavData: Artifacts = {
-    'mask': {
-        id: 'mask',
-        title: 'قناع توت عنخ آمون',
-        description: 'أشهر قطعة أثرية في العالم. مصنوع من الذهب الخالص ومطعم بالأحجار الكريمة.',
-        puzzle: 'لغز: ما هي الألوان الرئيسية التي استخدمها المصريون القدماء لطلاء القناع الذهبي؟',
-        position: new THREE.Vector3(0, 0, -150),
-        icon: 'fas fa-crown',
-        category: 'jewelry',
-        rarity: 'legendary',
-        goal: false,
-        isExplored: false,
-        isPlaying: false
-    },
-    'rosetta': {
-        id: 'rosetta',
-        title: 'حجر رشيد',
-        description: 'لوحة حجرية حاسمة لفك رموز اللغة الهيروغليفية.',
-        puzzle: 'لغز: من هو العالم الفرنسي الذي فك شفرة الحجر في عام 1822؟',
-        position: new THREE.Vector3(-150, 0, 0),
-        icon: 'fas fa-book-open',
-        category: 'monument',
-        rarity: 'legendary',
-        goal: true,
-        isExplored: false,
-        isPlaying: false
-    },
-    'canopic': {
-        id: 'canopic',
-        title: 'الأواني الكانوبية',
-        description: 'الأواني الأربعة المستخدمة لحفظ الأعضاء الداخلية للمتوفى أثناء عملية التحنيط.',
-        puzzle: 'لغز: من هو ابن حورس الذي كان يحمي الرئتين؟',
-        position: new THREE.Vector3(150, 0, 0),
-        icon: 'fas fa-vial',
-        category: 'tool',
-        rarity: 'rare',
-        goal: false,
-        isExplored: false,
-        isPlaying: false
-    },
-    'book_of_dead': {
-        id: 'book_of_dead',
-        title: 'بردية كتاب الموتى',
-        description: 'مجموعة من النصوص الجنائزية والتعاويذ لمساعدة المتوفى في العالم الآخر.',
-        puzzle: 'لغز: ما هو الاسم المصري الأصلي لهذه البرديات؟',
-        position: new THREE.Vector3(-100, 0, 100),
-        icon: 'fas fa-scroll',
-        category: 'scroll',
-        rarity: 'rare',
-        goal: false,
-        isExplored: false,
-        isPlaying: false
-    },
-    'nefertiti_bust': {
-        id: 'nefertiti_bust',
-        title: 'تمثال نفرتيتي',
-        description: 'تمثال نصفي للملكة نفرتيتي، يُعتبر أيقونة للجمال العالمي.',
-        puzzle: 'لغز: ما هي الميزة المفقودة بشكل غامض في إحدى عيني التمثال؟',
-        position: new THREE.Vector3(-150, 0, -150),
-        icon: 'fas fa-female',
-        category: 'statue',
-        rarity: 'legendary',
-        goal: false,
-        isExplored: false,
-        isPlaying: false
-    }
-    // يمكن إضافة باقي القطع بنفس النمط الملكي...
-};
+  const handleLogout = () => {
+    if (!auth) return;
+    signOut(auth).catch(error => {
+      console.error("Logout failed:", error);
+    });
+  };
+
+  if (isUserLoading) {
+    return <Loader2 className="h-6 w-6 animate-spin" />
+  }
+
+  if (!user) {
+    return (
+      <Button asChild>
+        <Link href="/login">
+            <LogIn className="mr-2 h-4 w-4" />
+            Sign In
+        </Link>
+      </Button>
+    )
+  }
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+          <Avatar className="h-8 w-8" data-ai-hint="person portrait">
+            <AvatarImage src={user.photoURL || undefined} alt="User avatar" />
+            <AvatarFallback>{getInitials(user.displayName)}</AvatarFallback>
+          </Avatar>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56" align="end" forceMount>
+        <DropdownMenuLabel className="font-normal">
+          <div className="flex flex-col space-y-1">
+            <p className="text-sm font-medium leading-none">{user.displayName || "User"}</p>
+            <p className="text-xs leading-none text-muted-foreground">
+              {user.email || "No email"}
+            </p>
+          </div>
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuItem asChild>
+             <Link href="/dashboard">
+                <User className="mr-2 h-4 w-4" />
+                <span>Profile</span>
+             </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <CreditCard className="mr-2 h-4 w-4" />
+            <span>Billing</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Settings className="mr-2 h-4 w-4" />
+            <span>Settings</span>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={handleLogout}>
+          <LogOut className="mr-2 h-4 w-4" />
+          <span>Log out</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
